@@ -1,0 +1,60 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: admin-server
+  labels:
+    app: pet-clinic
+    service: admin-server
+spec:
+  ports:
+    - port: 8081
+      name: http
+  selector:
+    app: admin-server
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: admin-server
+spec:
+  revisionHistoryLimit: 5
+  selector:
+    matchLabels:
+      app: admin-server
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  template:
+    metadata:
+      labels:
+        app: admin-server
+        version: 1.0.0
+    spec:
+      automountServiceAccountToken: false
+      containers:
+        - name: admin-server
+          image: admin-server:latest
+          ports:
+            - name: http
+              containerPort: 8081
+          livenessProbe:
+            httpGet:
+              path: /actuator/health/liveness
+              port: 8081
+            initialDelaySeconds: 90
+            periodSeconds: 30
+            failureThreshold: 5
+          readinessProbe:
+            httpGet:
+              path: /actuator/health/readiness
+              port: 8081
+            initialDelaySeconds: 90
+            periodSeconds: 30
+            failureThreshold: 5
+          securityContext:
+            allowPrivilegeEscalation: false
+            runAsUser: 1001
+            runAsGroup: 2001

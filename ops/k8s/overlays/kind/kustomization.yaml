@@ -1,0 +1,25 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - ../../infrastructure/istio/app
+  - ../../infrastructure/istio/kube-prometheus-stack
+  - ../../infrastructure/istio/kiali
+  - ../../app
+
+images:
+  - name: admin-server
+    newName: springcommunity/spring-petclinic-admin-server
+    newTag: 1.0.0
+  - name: api-gateway
+    newName: springcommunity/spring-petclinic-api-gateway
+    newTag: 1.0.0
+  - name: customers-service
+    newName: springcommunity/spring-petclinic-customers-service
+    newTag: 1.0.0
+  - name: vets-service
+    newName: springcommunity/spring-petclinic-vets-service
+    newTag: 1.0.0
+  - name: visits-service
+    newName: springcommunity/spring-petclinic-visits-service
+    newTag: 1.0.0

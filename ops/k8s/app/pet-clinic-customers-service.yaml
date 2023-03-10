@@ -1,0 +1,60 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: customers-service
+  labels:
+    app: pet-clinic
+    service: customers-service
+spec:
+  ports:
+    - port: 8082
+      name: http
+  selector:
+    app: customers-service
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: customers-service
+spec:
+  revisionHistoryLimit: 5
+  selector:
+    matchLabels:
+      app: customers-service
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  template:
+    metadata:
+      labels:
+        app: customers-service
+        version: 1.0.0
+    spec:
+      automountServiceAccountToken: false
+      containers:
+        - name: customers-service
+          image: customers-service:latest
+          ports:
+            - name: http
+              containerPort: 8082
+          livenessProbe:
+            httpGet:
+              path: /actuator/health/liveness
+              port: 8082
+            initialDelaySeconds: 90
+            periodSeconds: 30
+            failureThreshold: 5
+          readinessProbe:
+            httpGet:
+              path: /actuator/health/readiness
+              port: 8082
+            initialDelaySeconds: 90
+            periodSeconds: 30
+            failureThreshold: 5
+          securityContext:
+            allowPrivilegeEscalation: false
+            runAsUser: 1001
+            runAsGroup: 2001

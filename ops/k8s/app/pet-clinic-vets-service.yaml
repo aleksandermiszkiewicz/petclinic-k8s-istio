@@ -1,0 +1,60 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: vets-service
+  labels:
+    app: pet-clinic
+    service: vets-service
+spec:
+  ports:
+    - port: 8083
+      name: http
+  selector:
+    app: vets-service
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vets-service
+spec:
+  revisionHistoryLimit: 5
+  selector:
+    matchLabels:
+      app: vets-service
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  template:
+    metadata:
+      labels:
+        app: vets-service
+        version: 1.0.0
+    spec:
+      automountServiceAccountToken: false
+      containers:
+        - name: vets-service
+          image: vets-service:latest
+          ports:
+            - name: http
+              containerPort: 8083
+          livenessProbe:
+            httpGet:
+              path: /actuator/health/liveness
+              port: 8083
+            initialDelaySeconds: 90
+            periodSeconds: 30
+            failureThreshold: 5
+          readinessProbe:
+            httpGet:
+              path: /actuator/health/readiness
+              port: 8083
+            initialDelaySeconds: 90
+            periodSeconds: 30
+            failureThreshold: 5
+          securityContext:
+            allowPrivilegeEscalation: false
+            runAsUser: 1001
+            runAsGroup: 2001

@@ -1,0 +1,60 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: visits-service
+  labels:
+    app: pet-clinic
+    service: visits-service
+spec:
+  ports:
+    - port: 8084
+      name: http
+  selector:
+    app: visits-service
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: visits-service
+spec:
+  revisionHistoryLimit: 5
+  selector:
+    matchLabels:
+      app: visits-service
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  template:
+    metadata:
+      labels:
+        app: visits-service
+        version: 1.0.0
+    spec:
+      automountServiceAccountToken: false
+      containers:
+        - name: visits-service
+          image: visits-service:latest
+          ports:
+            - name: http
+              containerPort: 8084
+          livenessProbe:
+            httpGet:
+              path: /actuator/health/liveness
+              port: 8084
+            initialDelaySeconds: 90
+            periodSeconds: 30
+            failureThreshold: 5
+          readinessProbe:
+            httpGet:
+              path: /actuator/health/readiness
+              port: 8084
+            initialDelaySeconds: 90
+            periodSeconds: 30
+            failureThreshold: 5
+          securityContext:
+            allowPrivilegeEscalation: false
+            runAsUser: 1001
+            runAsGroup: 2001

@@ -1,16 +1,54 @@
+server:
+  port: 8083
+  shutdown: graceful
+
+vets:
+  cache:
+    ttl: 60
+    heap-size: 100
+
 spring:
   application:
     name: vets-service
-  config:
-    import: optional:configserver:${CONFIG_SERVER_URL:http://localhost:8888/}
   cache:
     cache-names: vets
-  profiles:
-    active: production
+  sql:
+    init:
+      schema-locations: classpath*:db/hsqldb/schema.sql
+      data-locations: classpath*:db/hsqldb/data.sql
+  sleuth:
+    sampler:
+      probability: 1.0
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: none
+  boot:
+    admin:
+      client:
+        url: http://admin-server:8081
 
----
-spring:
-  config:
-    activate:
-      on-profile: docker
-    import: configserver:http://config-server:8888
+management:
+  security:
+    enabled: false
+  endpoint:
+    metrics:
+      enabled: true
+    prometheus:
+      enabled: true
+    health:
+      probes:
+        enabled: true
+      show-details: always
+  prometheus:
+    metrics:
+      export:
+        enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+
+logging:
+  level:
+    org.springframework: INFO

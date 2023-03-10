@@ -1,0 +1,29 @@
+customers-service:
+  host: localhost
+  port: 8082
+visits-service:
+  host: localhost
+  port: 8084
+
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: vets-service
+          uri: http://localhost:8083
+          predicates:
+            - Path=/api/vet/**
+          filters:
+            - StripPrefix=2
+        - id: visits-service
+          uri: http://localhost:8084
+          predicates:
+            - Path=/api/visit/**
+          filters:
+            - StripPrefix=2
+        - id: customers-service
+          uri: http://localhost:8082
+          predicates:
+            - Path=/api/customer/**
+          filters:
+            - StripPrefix=2

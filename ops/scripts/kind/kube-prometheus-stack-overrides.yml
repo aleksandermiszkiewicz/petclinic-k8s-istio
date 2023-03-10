@@ -1,0 +1,39 @@
+grafana:
+  service:
+    port: 3000
+  sidecar:
+    datasources:
+      uid: prometheus
+      url: http://prometheus-kube-prometheus-prometheus:9090/
+#    alerts:
+#      enabled: false
+#      skipReload: true
+#    dashboards:
+#      SCProvider: true
+#      orgid:
+#      enabled: true
+#      label: grafana_dashboard
+#      labelValue: "1"
+prometheus:
+  enabled: true
+#  prometheusSpec:
+#    additionalScrapeConfigs:
+#      - job_name: 'istiod'
+#        kubernetes_sd_configs:
+#          - role: endpoints
+#            namespaces:
+#              names:
+#                - istio-system
+#        relabel_configs:
+#          - source_labels: [ __meta_kubernetes_service_name, __meta_kubernetes_endpoint_port_name ]
+#            action: keep
+#            regex: istiod;http-monitoring
+#      - job_name: 'envoy-stats'
+#        metrics_path: /stats/prometheus
+#        kubernetes_sd_configs:
+#          - role: pod
+#
+#        relabel_configs:
+#          - source_labels: [ __meta_kubernetes_pod_container_port_name ]
+#            action: keep
+#            regex: '.*-envoy-prom'

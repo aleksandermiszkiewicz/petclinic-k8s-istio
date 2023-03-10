@@ -16,6 +16,7 @@
 package org.springframework.samples.petclinic.api.boundary.web;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.client.circuitbreaker.ReactiveCircuitBreaker;
 import org.springframework.cloud.client.circuitbreaker.ReactiveCircuitBreakerFactory;
 import org.springframework.samples.petclinic.api.application.CustomersServiceClient;
@@ -29,11 +30,11 @@ import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Mono;
 
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 /**
  * @author Maciej Szarlinski
  */
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/gateway")
@@ -52,7 +53,11 @@ public class ApiGatewayController {
                 visitsServiceClient.getVisitsForPets(owner.getPetIds())
                     .transform(it -> {
                         ReactiveCircuitBreaker cb = cbFactory.create("getOwnerDetails");
-                        return cb.run(it, throwable -> emptyVisitsForPets());
+                        return cb.run(it, throwable -> {
+                            log.error("dupa ", throwable);
+
+                            return emptyVisitsForPets();
+                        });
                     })
                     .map(addVisitsToOwner(owner))
             );
@@ -64,8 +69,7 @@ public class ApiGatewayController {
             owner.getPets()
                 .forEach(pet -> pet.getVisits()
                     .addAll(visits.getItems().stream()
-                        .filter(v -> v.getPetId() == pet.getId())
-                        .collect(Collectors.toList()))
+                        .filter(v -> v.getPetId() == pet.getId()).toList())
                 );
             return owner;
         };

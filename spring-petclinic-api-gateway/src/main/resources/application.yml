@@ -1,35 +1,66 @@
+server:
+  port: 8080
+  compression:
+    enabled: true
+    mime-types: application/json,text/css,application/javascript
+    min-response-size: 2048
+  shutdown: graceful
+
+customers-service:
+  host: customers-service
+  port: 8082
+visits-service:
+  host: visits-service
+  port: 8084
+
 spring:
   application:
     name: api-gateway
-  config:
-    import: optional:configserver:${CONFIG_SERVER_URL:http://localhost:8888/}
   cloud:
     gateway:
       routes:
         - id: vets-service
-          uri: lb://vets-service
+          uri: http://vets-service:8083
           predicates:
             - Path=/api/vet/**
           filters:
             - StripPrefix=2
         - id: visits-service
-          uri: lb://visits-service
+          uri: http://visits-service:8084
           predicates:
             - Path=/api/visit/**
           filters:
             - StripPrefix=2
         - id: customers-service
-          uri: lb://customers-service
+          uri: http://customers-service:8082
           predicates:
             - Path=/api/customer/**
           filters:
             - StripPrefix=2
+  messages:
+    basename: messages/messages
+  boot:
+    admin:
+      client:
+        url: http://admin-server:8081
 
-
-
----
-spring:
-  config:
-    activate:
-      on-profile: docker
-    import: configserver:http://config-server:8888
+management:
+  security:
+    enabled: false
+  endpoint:
+    metrics:
+      enabled: true
+    prometheus:
+      enabled: true
+    health:
+      probes:
+        enabled: true
+      show-details: always
+  prometheus:
+    metrics:
+      export:
+        enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: "*"

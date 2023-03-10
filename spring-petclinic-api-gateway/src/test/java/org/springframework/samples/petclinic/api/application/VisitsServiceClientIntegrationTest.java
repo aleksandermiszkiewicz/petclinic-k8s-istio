@@ -27,8 +27,7 @@ class VisitsServiceClientIntegrationTest {
     @BeforeEach
     void setUp() {
         server = new MockWebServer();
-        visitsServiceClient = new VisitsServiceClient(WebClient.builder());
-        visitsServiceClient.setHostname(server.url("/").toString());
+        visitsServiceClient = new VisitsServiceClient(WebClient.builder().build(), server.getHostName(), String.valueOf(server.getPort()));
     }
 
     @AfterEach
@@ -44,7 +43,7 @@ class VisitsServiceClientIntegrationTest {
 
         Mono<Visits> visits = visitsServiceClient.getVisitsForPets(Collections.singletonList(1));
 
-        assertVisitDescriptionEquals(visits.block(), PET_ID,"test visit");
+        assertVisitDescriptionEquals(visits.block(), PET_ID, "test visit");
     }
 
 

@@ -1,13 +1,47 @@
+server:
+  port: 8084
+  shutdown: graceful
+
 spring:
   application:
     name: visits-service
-  config:
-    import: optional:configserver:${CONFIG_SERVER_URL:http://localhost:8888/}
+  sql:
+    init:
+      schema-locations: classpath*:db/hsqldb/schema.sql
+      data-locations: classpath*:db/hsqldb/data.sql
+  sleuth:
+    sampler:
+      probability: 1.0
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: none
+  boot:
+    admin:
+      client:
+        url: http://admin-server:8081
 
+management:
+  security:
+    enabled: false
+  endpoint:
+    metrics:
+      enabled: true
+    prometheus:
+      enabled: true
+    health:
+      probes:
+        enabled: true
+      show-details: always
+  prometheus:
+    metrics:
+      export:
+        enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: "*"
 
----
-spring:
-  config:
-    activate:
-      on-profile: docker
-    import: configserver:http://config-server:8888
+logging:
+  level:
+    org.springframework: INFO
