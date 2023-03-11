@@ -5,4 +5,5 @@ namespace: prometheus
 resources:
   - prometheus.yaml
   - prometheus-istio-monitoring.yml
-#  - prometheus-pet-clinic-monitoring.yaml
+  - prometheus-pet-clinic-monitoring.yaml
+  - grafana-pet-clinic-dasbhoard-cm.yaml
