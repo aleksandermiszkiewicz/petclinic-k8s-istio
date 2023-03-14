@@ -1,47 +1,38 @@
 service:
-  type: NodePort
+  type: LoadBalancer
   ports:
-    - name: status-port
-      port: 15021
-      protocol: TCP
-      targetPort: 15021
-      nodePort: 30002
     - name: http2
       port: 80
       protocol: TCP
       targetPort: 8080
-      nodePort: 30000
-    - name: https
-      port: 443
+    - name: status-port
+      port: 15021
       protocol: TCP
-      targetPort: 8443
-      nodePort: 30001
+      targetPort: 15021
     - name: http-kiali
       port: 20001
       protocol: TCP
       targetPort: 20001
-      nodePort: 30003
     - name: http-prometheus
       port: 9090
       protocol: TCP
       targetPort: 9090
-      nodePort: 30004
     - name: http-grafana
       port: 3000
       protocol: TCP
       targetPort: 3000
-      nodePort: 30005
+    - name: http-admin-server
+      port: 8081
+      protocol: TCP
+      targetPort: 8081
 
 resources:
   requests:
-    cpu: 100m
-    memory: 128Mi
+    cpu: 500m
+    memory: 512Mi
   limits:
     cpu: 2000m
     memory: 1024Mi
 
 autoscaling:
-  enabled: true
-  minReplicas: 1
-  maxReplicas: 5
-  targetCPUUtilizationPercentage: 80
+  enabled: false

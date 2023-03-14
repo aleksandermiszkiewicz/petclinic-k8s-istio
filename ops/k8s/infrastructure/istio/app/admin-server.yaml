@@ -1,0 +1,41 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: admin-server-gateway
+spec:
+  selector:
+    istio: ingressgateway
+  servers:
+    - port:
+        number: 8081
+        name: http
+        protocol: HTTP
+      hosts:
+        - "*"
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: admin-server
+spec:
+  gateways:
+    - admin-server-gateway
+  hosts:
+    - admin-server
+  http:
+    - route:
+        - destination:
+            host: admin-server
+            port:
+              number: 8081
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: admin-server
+spec:
+  host: admin-server
+  subsets:
+    - name: v1
+      labels:
+        version: 1.0.0

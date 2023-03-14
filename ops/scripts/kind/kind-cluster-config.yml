@@ -6,18 +6,18 @@ nodes:
       - containerPort: 30000 # app
         hostPort: 80
         protocol: TCP
-      - containerPort: 30001 # (not used)
-        hostPort: 443
-        protocol: TCP
-      - containerPort: 30002 # status
+      - containerPort: 30001 # status
         hostPort: 15021
         protocol: TCP
-      - containerPort: 30003 # kiali
+      - containerPort: 30002 # kiali
         hostPort: 20001
         protocol: TCP
-      - containerPort: 30004 # prometheus
+      - containerPort: 30003 # prometheus
         hostPort: 9090
         protocol: TCP
-      - containerPort: 30005 # grafana
+      - containerPort: 30004 # grafana
         hostPort: 3000
+        protocol: TCP
+      - containerPort: 30005 # admin-server
+        hostPort: 8081
         protocol: TCP

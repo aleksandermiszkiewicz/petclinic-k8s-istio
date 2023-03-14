@@ -26,16 +26,10 @@
     <properties>
         <java.version>17</java.version>
         <assertj.version>3.17.1</assertj.version>
-
         <spring-cloud.version>2022.0.1</spring-cloud.version>
         <chaos-monkey-spring-boot.version>2.3.10</chaos-monkey-spring-boot.version>
         <jolokia-core.version>1.7.1</jolokia-core.version>
-
-        <docker.image.prefix>springcommunity</docker.image.prefix>
-        <docker.image.exposed.port>9090</docker.image.exposed.port>
-        <docker.image.dockerfile.dir>${basedir}</docker.image.dockerfile.dir>
-        <docker.image.dockerize.version>v0.6.1</docker.image.dockerize.version>
-        <docker.plugin.version>1.2.0</docker.plugin.version>
+        <docker.image.prefix>local</docker.image.prefix>
     </properties>
 
     <dependencyManagement>
@@ -67,6 +61,12 @@
     </dependencyManagement>
 
     <profiles>
+        <profile>
+            <id>gcp</id>
+            <properties>
+                <docker.image.prefix>gcr.io/${GCP_PROJECT_ID}</docker.image.prefix>
+            </properties>
+        </profile>
         <profile>
             <id>springboot</id>
             <activation>
@@ -136,7 +136,7 @@
                                     <image>eclipse-temurin:17-jre</image>
                                 </from>
                                 <to>
-                                    <image>${docker.image.prefix}/${project.artifactId}:${appVersion}</image>
+                                    <image>${docker.image.prefix}/${project.artifactId}:${APP_VERSION}</image>
                                 </to>
                                 <container>
                                     <creationTime>USE_CURRENT_TIMESTAMP</creationTime>

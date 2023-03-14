@@ -3,6 +3,8 @@ kind: Kustomization
 namespace: pet-clinic
 
 resources:
-  - destination-rules.yaml
-  - virtual-services.yaml
-  - gateway.yaml
+  - admin-server.yaml
+  - api-gateway.yaml
+  - customers-service.yaml
+  - visits-service.yaml
+  - vets-service.yaml

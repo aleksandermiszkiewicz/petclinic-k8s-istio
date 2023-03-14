@@ -1,14 +1,10 @@
-# For what a Kiali CR spec can look like, see:
-# https://github.com/kiali/kiali-operator/blob/master/deploy/kiali/kiali_cr.yaml
 cr:
   create: true
   name: kiali
-  # If you elect to create a Kiali CR (--set cr.create=true)
-  # and the operator is watching all namespaces (--set watchNamespace="")
-  # then this is the namespace where the CR will be created (the default will be the operator namespace).
   namespace: "istio-system"
   spec:
     auth:
+      # no protection for authorization
       strategy: anonymous
     external-services:
       istio:

@@ -1,10 +1,12 @@
 grafana:
   service:
     port: 3000
-  sidecar:
+datasources:
+  datasources.yaml:
+    apiVersion: 1
     datasources:
       - name: Prometheus
         type: prometheus
-        isDefault: true
         url: http://prometheus-kube-prometheus-prometheus:9090/
         access: proxy
+        isDefault: true
