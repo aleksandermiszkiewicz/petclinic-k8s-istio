@@ -16,7 +16,7 @@ resource "google_container_cluster" "gke_cluster" {
   private_cluster_config {
     enable_private_endpoint = false
     enable_private_nodes    = true
-    master_ipv4_cidr_block = "10.100.0.0/28"
+    master_ipv4_cidr_block = var.gke_master_cidr_range
   }
 
   networking_mode = "VPC_NATIVE"
@@ -36,19 +36,11 @@ resource "google_container_node_pool" "gke_node_pool" {
   name       = var.gke_node_pool_name
   location   = var.gke_zone
   cluster    = google_container_cluster.gke_cluster.name
-  node_count = var.gke_node_pool_nodes_count
 
   node_config {
-    oauth_scopes = [
-      "https://www.googleapis.com/auth/devstorage.read_only",
-      "https://www.googleapis.com/auth/logging.write",
-      "https://www.googleapis.com/auth/monitoring",
-      "https://www.googleapis.com/auth/servicecontrol",
-      "https://www.googleapis.com/auth/service.management.readonly",
-      "https://www.googleapis.com/auth/trace.append"
-    ]
+    oauth_scopes = ["https://www.googleapis.com/auth/cloud-platform"]
 
-    machine_type = "e2-medium"
+    machine_type = "e2-standard-2"
     disk_type    = "pd-standard"
     disk_size_gb = 30
     image_type   = "COS_CONTAINERD"
@@ -56,10 +48,44 @@ resource "google_container_node_pool" "gke_node_pool" {
     metadata     = {
       disable-legacy-endpoints = "true"
     }
+
+    preemptible = true
+  }
+
+  autoscaling {
+    max_node_count = var.gke_node_pool_max_nodes_count
+    min_node_count = var.gke_node_pool_min_nodes_count
   }
 
   management {
     auto_repair  = true
     auto_upgrade = true
   }
+}
+
+resource  "google_project_iam_binding" log_writer {
+    project = var.project_id
+    role    = "roles/logging.logWriter"
+
+    members = [
+        "serviceAccount:${google_service_account.service_account.email}",
+    ]
+}
+
+resource  "google_project_iam_binding" metric_writer {
+  project = var.project_id
+  role    = "roles/monitoring.metricWriter"
+
+  members = [
+    "serviceAccount:${google_service_account.service_account.email}",
+  ]
+}
+
+resource "google_project_iam_binding" monitoring_viewer {
+    project = var.project_id
+    role    = "roles/monitoring.viewer"
+
+    members = [
+        "serviceAccount:${google_service_account.service_account.email}",
+    ]
 }

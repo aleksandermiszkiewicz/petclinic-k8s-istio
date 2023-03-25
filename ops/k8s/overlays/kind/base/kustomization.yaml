@@ -2,10 +2,11 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
 resources:
-  - ../../infrastructure/istio/app
-  - ../../infrastructure/istio/kube-prometheus-stack
-  - ../../infrastructure/istio/kiali
-  - ../../app
+  - ../../../infrastructure/istio/app
+  - ../../../infrastructure/istio/kube-prometheus-stack
+  - ../../../infrastructure/istio/kiali
+  - ../../../infrastructure/kube-prometheus-stack
+  - ../../../app
 
 images:
   - name: admin-server

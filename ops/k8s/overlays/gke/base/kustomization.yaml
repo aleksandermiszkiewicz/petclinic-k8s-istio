@@ -1,0 +1,24 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - ../../../infrastructure/istio/app
+  - ../../../infrastructure/istio/kube-prometheus-stack
+  - ../../../infrastructure/istio/kiali
+  - ../../../infrastructure/kube-prometheus-stack
+  - ../../../app
+images:
+  - name: admin-server
+    newName: europe-west1-docker.pkg.dev/project_id/pet-clinic/spring-petclinic-admin-server
+    newTag: 1.0.0
+  - name: api-gateway
+    newName: europe-west1-docker.pkg.dev/project_id/pet-clinic/spring-petclinic-api-gateway
+    newTag: 1.0.0
+  - name: customers-service
+    newName: europe-west1-docker.pkg.dev/project_id/pet-clinic/spring-petclinic-customers-service
+    newTag: 1.0.0
+  - name: vets-service
+    newName: europe-west1-docker.pkg.dev/project_id/pet-clinic/spring-petclinic-vets-service
+    newTag: 1.0.0
+  - name: visits-service
+    newName: europe-west1-docker.pkg.dev/project_id/pet-clinic/spring-petclinic-visits-service
+    newTag: 1.0.0

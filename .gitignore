@@ -25,3 +25,5 @@ ops/charts-values
 ops/scripts/kind/*-overrides.yaml
 ops/scripts/gcp/*-overrides.yaml
 ops/scripts/gcp/terraform/terraform.tfvars
+ops/scripts/gcp/terraform/terraform.tfstate*
+ops/scripts/gcp/terraform/.terraform*

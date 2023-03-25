@@ -64,7 +64,7 @@
         <profile>
             <id>gcp</id>
             <properties>
-                <docker.image.prefix>gcr.io/${GCP_PROJECT_ID}</docker.image.prefix>
+                <docker.image.prefix>${GCP_ACR_LOCATION}-docker.pkg.dev/${GCP_PROJECT_ID}/${GCP_ACR_REPOSITORY}</docker.image.prefix>
             </properties>
         </profile>
         <profile>
