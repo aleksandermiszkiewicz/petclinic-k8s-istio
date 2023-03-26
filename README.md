@@ -1,6 +1,6 @@
 # Distributed version of the Spring PetClinic Sample Application hosted on K8s with Istio Service Mesh
 
-This project is fork from [Spring PetClinic Microservice project](https://github.com/spring-petclinic/spring-petclinic-microservices) to demonstrate how to use Istio Service Mesh on Kubernetes. While running on Kubernetes and Istio, some components (such as Spring Cloud Config and Eureka Service Discovery) are removed. Additionally, small refactor was done to remove the dependencies and tools which are not relevant to this use case.
+This project is fork from [Spring PetClinic Microservice project](https://github.com/spring-petclinic/spring-petclinic-microservices) to demonstrate how to use [Istio Service Mesh](https://istio.io) on Kubernetes. While running on Kubernetes and Istio, some components (such as Spring Cloud Config and Eureka Service Discovery) are removed. Additionally, small refactor was done to remove the dependencies and tools which are not relevant to this use case.
 
 ## Introduction
 
@@ -57,7 +57,7 @@ gke_zone                          = "gcp_zone"
 ```
 <i>you can override other default values for the variables in the `terraform.tfvars` file</i>
 
-2. Configure gcloud 
+2. Configure `gcloud` 
 
 Terraform is using Google Cloud SDK to authenticate to GCP. To configure gcloud run the following command:
 
@@ -68,7 +68,7 @@ google auth application-default login
 4. Run the following command:
 
 ```
-bash ops/scripts/gcp/setup-gcp-enviornment.sh 
+bash ops/scripts/gcp/setup-gcp-environment.sh 
 ```
 This command is responsible for:
 * creating GCP infrastructure (VPC, subnets, GKE cluster) using Terraform
