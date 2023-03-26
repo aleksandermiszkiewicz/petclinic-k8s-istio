@@ -16,13 +16,13 @@
 package org.springframework.samples.petclinic.customers.web;
 
 import io.micrometer.core.annotation.Timed;
+import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.samples.petclinic.customers.model.*;
 import org.springframework.web.bind.annotation.*;
 
-import jakarta.validation.constraints.Min;
 import java.util.List;
 import java.util.Optional;
 
@@ -55,7 +55,7 @@ class PetResource {
         @PathVariable("ownerId") @Min(1) int ownerId) {
 
         final Optional<Owner> optionalOwner = ownerRepository.findById(ownerId);
-        Owner owner = optionalOwner.orElseThrow(() -> new ResourceNotFoundException("Owner "+ownerId+" not found"));
+        Owner owner = optionalOwner.orElseThrow(() -> new ResourceNotFoundException("Owner " + ownerId + " not found"));
 
         final Pet pet = new Pet();
         owner.addPet(pet);
@@ -91,7 +91,7 @@ class PetResource {
     private Pet findPetById(int petId) {
         Optional<Pet> pet = petRepository.findById(petId);
         if (!pet.isPresent()) {
-            throw new ResourceNotFoundException("Pet "+petId+" not found");
+            throw new ResourceNotFoundException("Pet " + petId + " not found");
         }
         return pet.get();
     }

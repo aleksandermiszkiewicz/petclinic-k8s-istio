@@ -17,8 +17,6 @@ package org.springframework.samples.petclinic.api.boundary.web;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.cloud.client.circuitbreaker.ReactiveCircuitBreaker;
-import org.springframework.cloud.client.circuitbreaker.ReactiveCircuitBreakerFactory;
 import org.springframework.samples.petclinic.api.application.CustomersServiceClient;
 import org.springframework.samples.petclinic.api.application.VisitsServiceClient;
 import org.springframework.samples.petclinic.api.dto.OwnerDetails;
@@ -44,23 +42,10 @@ public class ApiGatewayController {
 
     private final VisitsServiceClient visitsServiceClient;
 
-    private final ReactiveCircuitBreakerFactory cbFactory;
-
     @GetMapping(value = "owners/{ownerId}")
     public Mono<OwnerDetails> getOwnerDetails(final @PathVariable int ownerId) {
         return customersServiceClient.getOwner(ownerId)
-            .flatMap(owner ->
-                visitsServiceClient.getVisitsForPets(owner.getPetIds())
-                    .transform(it -> {
-                        ReactiveCircuitBreaker cb = cbFactory.create("getOwnerDetails");
-                        return cb.run(it, throwable -> {
-                            log.error("dupa ", throwable);
-
-                            return emptyVisitsForPets();
-                        });
-                    })
-                    .map(addVisitsToOwner(owner))
-            );
+            .flatMap(owner -> visitsServiceClient.getVisitsForPets(owner.getPetIds()).map(addVisitsToOwner(owner)));
 
     }
 
@@ -73,9 +58,5 @@ public class ApiGatewayController {
                 );
             return owner;
         };
-    }
-
-    private Mono<Visits> emptyVisitsForPets() {
-        return Mono.just(new Visits());
     }
 }

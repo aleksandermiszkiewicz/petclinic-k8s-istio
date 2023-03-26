@@ -73,7 +73,7 @@ function build_docker_images() {
 }
 
 function load_docker_images() {
-  images=$(docker images "springcommunity/*:${app_version}" | awk '{if(NR>1) print $1}')
+  images=$(docker images "local/spring-petclinic*:${app_version}" | awk '{if(NR>1) print $1}')
 
   echo "Load images to Kind"
   for image in $images; do

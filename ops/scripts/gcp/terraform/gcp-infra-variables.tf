@@ -90,4 +90,5 @@ variable "cloud_nat_name" {
 variable "artifact_registry_repository_name" {
   type = string
   description = "Pet-Clinic Artifact registry repository name"
+  default = "pet-clinic"
 }
